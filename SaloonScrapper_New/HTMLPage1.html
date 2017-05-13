@@ -1,0 +1,64 @@
+﻿<meta http-equiv="X-UA-Compatible" content="IE=9" />
+<script src="js/jquery.js" type="text/javascript"></script>
+<script src="js/Encrypt.js" type="text/javascript"></script>
+ <script>
+     var credentials =
+     {
+        consumerKey: '7BLI6f1oAGhfBBaUGp61',
+        consumerSecret: 'uRXUDxGcEkzuuUi6X6Pa',
+        accessToken: 'uRXUDxGcEkzuuUi6X6Pa',
+        accessTokenSecret: 'dGKwKCpVuGullYMnUfyk'
+     };
+     var jsonResponseEmployeeNew;
+     var name;
+     function fun()
+     {
+         //window.shortcuts.widgets.security.OAuth.sign('https://pos.shortcutssoftware.com/webapi/site/7966d291-1b12-dd11-a234-0050563fff01/services?limit=5000&is_active=true&fields=display%2Cdescription%2Cprice%2Clinks%2Cdefault_duration_minutes%2Cbreak_duration_minutes&is_customer_bookable=true', '', { accessToken: credentials.accessToken, accessTokenSecret: credentials.accessTokenSecret });
+         employeeListNew = window.shortcuts.widgets.ajaxSigned('https://pos.shortcutssoftware.com/webapi/site/7966d291-1b12-dd11-a234-0050563fff01/services?limit=5000&is_active=true&fields=display%2Cdescription%2Cprice%2Clinks%2Cdefault_duration_minutes%2Cbreak_duration_minutes&is_customer_bookable=true', { accessToken: credentials.accessToken, accessTokenSecret: credentials.accessTokenSecret }).done(function ()
+         {
+             employeeDataNew = employeeListNew.responseText;
+             jsonResponseEmployeeNew = JSON.parse(employeeDataNew);
+             name = employeeListNew.responseJSON.services[0].display_name;
+             document.getElementById('content').innerHTML = employeeListNew.responseJSON.services[0].display_name;
+         });
+     }
+
+     function funEmployeePricing(URL)
+     {
+         employeeListNew = window.shortcuts.widgets.ajaxSigned(URL, { accessToken: credentials.accessToken, accessTokenSecret: credentials.accessTokenSecret }).done(function () {
+             employeeDataNew = employeeListNew.responseText;
+             jsonResponseEmployeeNew = JSON.parse(employeeDataNew);
+             name = employeeListNew.responseJSON.services[0].display_name;
+             document.getElementById('content').innerHTML = employeeListNew.responseJSON.services[0].display_name;
+         });
+     }
+
+     function signatureEmployeePricing(URL)
+     {
+         funEmployeePricing(URL);
+         return window.external.signature(window.shortcuts.widgets.security.OAuth.defaultEncoding.Z);
+     }
+
+  function signature()
+  {
+      fun();
+      return window.external.signature(window.shortcuts.widgets.security.OAuth.defaultEncoding.Z);
+  }
+
+  function getnonce(value)
+  {
+      var nonce = window.shortcuts.widgets.security.OAuth.defaultEncoding.nonceCallback();
+      return window.external.getnonce(nonce);
+  }
+
+  function timestamp()
+  {
+      var nonce = window.shortcuts.widgets.security.OAuth.defaultEncoding.timestampCallback();
+      return window.external.gettimestamp(nonce);
+  }
+</script>
+<html>
+    <body>
+       <div id="content"></div>
+    </body>
+</html>
